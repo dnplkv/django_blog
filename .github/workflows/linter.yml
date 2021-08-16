@@ -22,6 +22,6 @@ jobs:
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
-      run: flake8 ./blog
+      run: flake8 ./core
 #    - name: Django check
 #      run: python blog/manage.py check
