@@ -1,6 +1,9 @@
+from django.contrib import messages
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.core.checks import messages
 from django.shortcuts import render, redirect
+
+from forms import ProfileForm
 
 
 def register(request):
@@ -23,3 +26,40 @@ def register(request):
         return render(request, 'login.html')
 
     return render(request, "register.html")
+
+
+def login(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            messages.success(request, "Successfully Logged In")
+            return redirect("/")
+        else:
+            messages.error(request, "Invalid Credentials")
+        return render(request, 'blog.html')
+    return render(request, "login.html")
+
+
+def Profile(request):
+    return render(request, "profile.html")
+
+
+def edit_profile(request):
+    try:
+        profile = request.user.profile
+    except Profile.DoesNotExist:
+        profile = Profile(user=request.user)
+    if request.method == "POST":
+        form = ProfileForm(data=request.POST, files=request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            alert = True
+            return render(request, "edit_profile.html", {'alert': alert})
+    else:
+        form = ProfileForm(instance=profile)
+    return render(request, "edit_profile.html", {'form': form})
