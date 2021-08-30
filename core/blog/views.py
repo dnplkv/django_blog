@@ -1,9 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
-from forms import ProfileForm
+from blog.models import BlogPost, Comment
+from blog.forms import ProfileForm, BlogPostForm
 
 
 def register(request):
@@ -63,3 +65,36 @@ def edit_profile(request):
     else:
         form = ProfileForm(instance=profile)
     return render(request, "edit_profile.html", {'form': form})
+
+
+def blogs(request):
+    posts = BlogPost.objects.all()
+    posts = BlogPost.objects.filter().order_by('-dateTime')
+    return render(request, "blog.html", {'posts': posts})
+
+
+@login_required(login_url='/login')
+def add_blogs(request):
+    if request.method == "POST":
+        form = BlogPostForm(data=request.POST, files=request.FILES)
+        if form.is_valid():
+            blogpost = form.save(commit=False)
+            blogpost.author = request.user
+            blogpost.save()
+            obj = form.instance
+            alert = True
+            return render(request, "add_blogs.html", {'obj': obj, 'alert': alert})
+    else:
+        form = BlogPostForm()
+    return render(request, "add_blogs.html", {'form': form})
+
+
+def blogs_comments(request, slug):
+    post = BlogPost.objects.filter(slug=slug).first()
+    comments = Comment.objects.filter(blog=post)
+    if request.method == "POST":
+        user = request.user
+        content = request.POST.get('content', '')
+        comment = Comment(user=user, content=content, blog=post)
+        comment.save()
+    return render(request, "blog_comments.html", {'post': post, 'comments': comments})
