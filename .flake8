@@ -3,4 +3,4 @@ max-line-length=120
 inline-quotes="
 max-complexity=10
 import-order-style=google
-ignore=F401
+ignore=F401,F403,F405
