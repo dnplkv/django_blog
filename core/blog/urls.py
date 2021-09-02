@@ -11,12 +11,12 @@ urlpatterns = [
     path("search/", views.search, name="search"),
 
 
-    path("profile/", views.Profile, name="profile"),
+    path("profile/", views.profile_view, name="profile_view"),
     path("edit_profile/", views.edit_profile, name="edit_profile"),
     path("user_profile/<int:myid>/", views.user_profile, name="user_profile"),
 
 
-    path("register/", views.Register, name="register"),
+    path("register/", views.register, name="register"),
     path("login/", views.Login, name="login"),
     path("logout/", views.Logout, name="logout"),
 ]
