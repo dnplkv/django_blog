@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from .models import *
+from .models import Profile, Comment, BlogPost
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm, BlogPostForm
 from django.views.generic import UpdateView
@@ -69,7 +69,7 @@ def user_profile(request, myid):
     return render(request, "user_profile.html", {'post': post})
 
 
-def Profile(request):
+def profile_view(request):
     return render(request, "profile.html")
 
 
@@ -89,7 +89,7 @@ def edit_profile(request):
     return render(request, "edit_profile.html", {'form': form})
 
 
-def Register(request):
+def register(request):
     if request.method == "POST":
         username = request.POST['username']
         email = request.POST['email']
